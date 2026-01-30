@@ -5,7 +5,10 @@ CLI系AIエージェント（Codex CLI / Claude Code / Gemini CLI など）か�
 
 このリポジトリは「まずローカルで評価 → チューニング → OCI Always Free（ARM）に載せる」流れを前提に、SearXNG の docker compose も同梱しています。
 
-クライアント設定ガイド（Codex CLI / Claude Code / Gemini CLI / OpenCode）: `docs/clients/README.md`
+推奨運用: **自前ホスト Ubuntu Server** に置き、**Cloudflare（Tunnel + Access）で公開**。
+
+- デプロイ手順: `docs/deploy/README.md`
+- クライアント設定（Codex CLI / Claude Code / Gemini CLI / OpenCode）: `docs/clients/README.md`
 
 次に読む: [目次](#目次) / [クイックスタート](#クイックスタートdocker--ローカル評価)
 
@@ -17,7 +20,7 @@ CLI系AIエージェント（Codex CLI / Claude Code / Gemini CLI など）か�
 - [できること](#できること)
 - [クイックスタート（Docker / ローカル評価）](#クイックスタートdocker--ローカル評価)
 - [環境変数（.env）](#環境変数env)
-- [OCI Always Free（ARM）にデプロイ](#oci-always-freearmにデプロイ)
+- [デプロイ（推奨）](#デプロイ推奨)
 - [Cloudflare 公開（推奨手順）](#cloudflare-公開推奨手順)
 - [ツール仕様（どう使うか）](#ツール仕様どう使うか)
 - [検索品質のチューニング（本番デプロイ不要）](#検索品質のチューニング本番デプロイ不要)
@@ -103,7 +106,7 @@ Cloudflare Tunnel（任意）:
 docker compose --profile tunnel up -d
 ```
 
-次に読む: [環境変数](#環境変数env) / [評価](#評価検索タスクをまとめて流す) / [OCIデプロイ](#oci-always-freearmにデプロイ)
+次に読む: [環境変数](#環境変数env) / [評価](#評価検索タスクをまとめて流す) / [デプロイ](#デプロイ推奨)
 
 ---
 
@@ -126,120 +129,21 @@ docker compose --profile tunnel up -d
 - `SEARXNG_SECRET`: 長いランダム文字列
 - `CLOUDFLARE_TUNNEL_TOKEN`: Tunnel を使う場合
 
-次に読む: [OCIデプロイ](#oci-always-freearmにデプロイ) / [Cloudflare 公開](#cloudflare-公開推奨手順) / [ツール仕様](#ツール仕様どう使うか)
+次に読む: [デプロイ](#デプロイ推奨) / [Cloudflare 公開](#cloudflare-公開推奨手順) / [ツール仕様](#ツール仕様どう使うか)
 
 ---
 
-## OCI Always Free（ARM）にデプロイ
+## デプロイ（推奨）
 
-前提:
+運用方針:
 
-- OCI の Always Free で ARM（Ampere）インスタンスを用意済み
-- OS は Ubuntu / Oracle Linux どちらでもOK（以下は Ubuntu 例）
-- セキュリティ的には **MCP をインターネットに直公開しない**（Cloudflare Tunnel 経由）運用を推奨
+- **Ubuntu Server** に `docker compose` で立てる（自宅/OCI/VPSどこでもOK）
+- 公開は **Cloudflare Tunnel + Access**（オリジンに 8787/8080 を開けない）
 
-### 1) OCI 側（インスタンス作成/ネットワーク）
+詳細:
 
-- インスタンス作成:
-  - Shape: ARM（A1）系
-  - OS: Ubuntu 推奨（手順が短い）
-  - Public IP: あり（SSH用。公開を最小化するなら固定IPよりも Access/Tunnel を優先）
-  - SSH鍵: 手元の公開鍵を登録
-- ネットワーク（重要）:
-  - インバウンドは **22/tcp（SSH）のみ** を開ける運用を推奨
-  - `8787`（MCP）や `8080`（SearXNG）は **開けない**
-  - 可能なら 22/tcp も自宅/作業IPに制限
-
-### 2) OCI で Docker / docker compose を入れる（Ubuntu）
-
-OCI に SSH で入って実行します。
-
-```bash
-sudo apt-get update
-sudo apt-get install -y docker.io docker-compose-plugin git
-sudo systemctl enable --now docker
-sudo usermod -aG docker $USER
-```
-
-※ `usermod` 反映のため、いったんログアウト→ログインし直してください。
-
-Oracle Linux などで手順が合わない場合（汎用 / 便利スクリプト）:
-
-```bash
-sudo dnf install -y git || true
-curl -fsSL https://get.docker.com | sudo sh
-sudo systemctl enable --now docker
-sudo usermod -aG docker $USER
-docker compose version
-```
-
-### 3) デプロイ（git clone → .env → docker compose up）
-
-```bash
-git clone https://github.com/Aero123421/SearXNGMCP.git
-cd SearXNGMCP
-cp .env.example .env
-```
-
-`.env` を編集（最低限これだけ）:
-
-- `API_KEYS`: 強いランダム文字列（カンマ区切りで複数可）
-- `SEARXNG_SECRET`: 強いランダム文字列
-- `CLOUDFLARE_TUNNEL_TOKEN`: Tunnel を使うなら設定
-
-ランダム生成例（どれか1つでOK）:
-
-```bash
-openssl rand -hex 32
-python3 -c 'import secrets; print(secrets.token_urlsafe(48))'
-```
-
-※ `openssl` が無ければ `sudo apt-get install -y openssl`。
-
-起動:
-
-```bash
-docker compose up -d --build
-# Tunnel も同じホストで動かす場合（推奨）
-docker compose --profile tunnel up -d
-```
-
-確認:
-
-```bash
-docker compose ps
-docker compose logs --tail 100 mcp
-docker compose logs --tail 100 searxng
-curl -fsS http://127.0.0.1:8787/healthz
-```
-
-### 4) 更新（pull → up -d --build）
-
-```bash
-cd SearXNGMCP
-git pull
-docker compose up -d --build
-```
-
-SearXNG 設定を変えたら:
-
-```bash
-docker compose restart searxng
-```
-
-ディスクが厳しい場合（任意）:
-
-```bash
-docker image prune -f
-```
-
-### 5) rendered を OCI で使う場合の注意（任意）
-
-ARM Always Free はリソースが限られることが多く、Chromium 同梱は重くなりがちです。
-
-- まずは `ENABLE_RENDERED_FETCH=false`（デフォルト）で運用
-- 必要になったら `MCP_DOCKERFILE=Dockerfile.rendered` + `ENABLE_RENDERED_FETCH=true` を検討
-- OOM が出るなら swap の追加を検討（OCI/OSの推奨に従ってください）
+- `docs/deploy/ubuntu-server.md`
+- `docs/deploy/cloudflare.md`
 
 次に読む: [Cloudflare 公開](#cloudflare-公開推奨手順) / [ツール仕様](#ツール仕様どう使うか) / [評価](#評価検索タスクをまとめて流す)
 
@@ -275,7 +179,7 @@ Public Hostname（ルーティング）の設定（例）:
 
 ※ 現状、MCP Gateway は「Cloudflare Access のJWT検証」までは実装していません（Cloudflare側でブロックする前提）。必要なら origin 側で `Cf-Access-Jwt-Assertion` を検証する実装も追加できます。
 
-次に読む: [ツール仕様](#ツール仕様どう使うか) / [OCIデプロイ](#oci-always-freearmにデプロイ) / [環境変数](#環境変数env)
+次に読む: [ツール仕様](#ツール仕様どう使うか) / [デプロイ](#デプロイ推奨) / [環境変数](#環境変数env)
 
 ---
 
@@ -432,4 +336,4 @@ API_KEY=... MCP_URL=http://127.0.0.1:8787/mcp npm run eval
 - `MCP_DOCKERFILE=Dockerfile.rendered` でビルドしているか（Chromium同梱）
 - `RENDER_TIMEOUT_MS` をサイトに合わせて調整
 
-次に読む: [目次](#目次) / [評価](#評価検索タスクをまとめて流す) / [OCIデプロイ](#oci-always-freearmにデプロイ)
+次に読む: [目次](#目次) / [評価](#評価検索タスクをまとめて流す) / [デプロイ](#デプロイ推奨)

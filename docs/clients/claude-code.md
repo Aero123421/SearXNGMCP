@@ -18,16 +18,31 @@ export CF_ACCESS_CLIENT_SECRET="..."
 
 ## 2) HTTP MCP サーバを追加
 
-例:
+例（オプションは server 名より前に書く）:
 
 ```bash
-claude mcp add --transport http sxng https://mcp.example.com/mcp \
+claude mcp add --transport http \
   --header "Authorization: Bearer $SXNG_MCP_API_KEY" \
   --header "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID" \
-  --header "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET"
+  --header "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET" \
+  sxng https://mcp.example.com/mcp
 ```
 
 Cloudflare Access を使わない場合は `CF-Access-*` の2行を省略してください。
+
+JSONで渡す方法（ヘッダが多い場合に便利）:
+
+```bash
+claude mcp add-json sxng '{
+  "type": "http",
+  "url": "https://mcp.example.com/mcp",
+  "headers": {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "CF-Access-Client-Id": "YOUR_ACCESS_CLIENT_ID",
+    "CF-Access-Client-Secret": "YOUR_ACCESS_CLIENT_SECRET"
+  }
+}'
+```
 
 スコープ（設定の保存先）:
 
@@ -41,4 +56,3 @@ claude mcp list
 ```
 
 Claude Code 内でツール一覧に `sxng_web_search` などが出ていればOKです。
-

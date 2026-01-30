@@ -26,7 +26,6 @@ OpenCode は `opencode.json`（または `~/.config/opencode/opencode.json`）�
       "type": "remote",
       "url": "https://mcp.example.com/mcp",
       "enabled": true,
-      "oauth": false,
       "headers": {
         "Authorization": "Bearer {env:SXNG_MCP_API_KEY}",
         "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
@@ -46,4 +45,3 @@ opencode mcp list
 ```
 
 ツールが読み込めていれば、`sxng_web_search` などが利用可能になります。
-
