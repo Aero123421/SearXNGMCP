@@ -3,9 +3,9 @@
 SearXNG を「候補取得（検索エンジン集約）」として使い、**MCP Gateway 側で重複排除・再ランキング・（必要なら）本文取得**まで行う、HTTP公開の Web検索 MCP サーバです。  
 CLI系AIエージェント（Codex CLI / Claude Code / Gemini CLI など）から **HTTPで直に叩ける MCP** を想定しています。
 
-このリポジトリは「まずローカルで評価 → チューニング → OCI Always Free（ARM）に載せる」流れを前提に、SearXNG の docker compose も同梱しています。
+このリポジトリは「まずローカルで評価 → チューニング → Ubuntu Server にデプロイ」する流れを前提に、SearXNG の docker compose も同梱しています。
 
-推奨運用: **自前ホスト Ubuntu Server** に置き、**Cloudflare（Tunnel + Access）で公開**。
+推奨運用: **自前ホスト Ubuntu Server** に置き、**Cloudflare（Tunnel + Access）で公開**（オリジンのポート開放は原則しない）。
 
 - デプロイ手順: `docs/deploy/README.md`
 - クライアント設定（Codex CLI / Claude Code / Gemini CLI / OpenCode）: `docs/clients/README.md`
@@ -105,6 +105,11 @@ Cloudflare Tunnel（任意）:
 # .env に CLOUDFLARE_TUNNEL_TOKEN が必要
 docker compose --profile tunnel up -d
 ```
+
+補足:
+
+- この `docker-compose.yml` は `127.0.0.1` バインドなので、ルータでポート開放していなくても外部からは直接叩けません（Tunnel 前提）。
+- 「外部に穴が空いていないか」の確認方法は `docs/deploy/ubuntu-server.md` にまとめています。
 
 次に読む: [環境変数](#環境変数env) / [評価](#評価検索タスクをまとめて流す) / [デプロイ](#デプロイ推奨)
 

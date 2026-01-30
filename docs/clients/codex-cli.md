@@ -5,6 +5,8 @@ Codex CLI は MCP（Streamable HTTP / stdio）に対応しています。MCP サ
 参考（公式）:
 
 - https://platform.openai.com/docs/codex/cli#model-context-protocol-mcp
+- https://platform.openai.com/docs/codex/cli#remote-mcp-servers
+- https://platform.openai.com/docs/codex/cli#headers
 
 ## 1) 事前準備（環境変数）
 
@@ -27,10 +29,10 @@ url = "https://mcp.example.com/mcp"
 # MCP Gateway の Bearer 認証（必須）
 bearer_token_env_var = "SXNG_MCP_API_KEY"
 
-# Cloudflare Access（Service Token）を使う場合（任意）
+# Cloudflare Access（Service Token）を使う場合（推奨）
 [mcp_servers.sxng.env_http_headers]
-"CF-Access-Client-Id" = "CF_ACCESS_CLIENT_ID"
-"CF-Access-Client-Secret" = "CF_ACCESS_CLIENT_SECRET"
+CF-Access-Client-Id = "CF_ACCESS_CLIENT_ID"
+CF-Access-Client-Secret = "CF_ACCESS_CLIENT_SECRET"
 ```
 
 ポイント:

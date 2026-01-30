@@ -36,6 +36,11 @@ Tunnel の Public Hostname で、MCP Gateway にルーティングします。
 
 Cloudflare Access の Application を作り、認証方式を選びます（推奨: Service Token）。
 
+Service Token（機械用認証）とは:
+
+- CLI/CI/サーバなど “人間ログインできないクライアント” のための Client ID / Client Secret
+- 入口（Cloudflare）で「このトークンを持つクライアントだけ通す」ために使います
+
 Service Token を使う場合、クライアントからは通常以下のヘッダを送ります:
 
 - `CF-Access-Client-Id: <id>`
@@ -54,4 +59,3 @@ Service Token を使う場合、クライアントからは通常以下のヘッ
 3) `sxng_web_search` などのツール一覧が取得できる  
 
 クライアント別の設定は `docs/clients/README.md` を参照。
-

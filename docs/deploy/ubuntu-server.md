@@ -88,6 +88,25 @@ docker compose logs -f --tail 200 searxng
 curl -fsS http://127.0.0.1:8787/healthz
 ```
 
+## 4.1) 「穴が開いてないか」確認（おすすめ）
+
+Ubuntu（ホスト）で待ち受けているポート確認:
+
+```bash
+sudo ss -lntup
+```
+
+Docker が公開しているポート確認:
+
+```bash
+docker compose ps
+```
+
+ポイント:
+
+- compose の `ports:` を `8787:8787` のように書くと、通常は `0.0.0.0` にバインドして外部から到達し得ます（ルータ/SG次第）。
+- このリポジトリは `127.0.0.1:8787:8787` のように **ループバック限定**にしてあります。
+
 ## 5) Cloudflare Tunnel を同じホストで動かす（推奨）
 
 Cloudflare 側で Tunnel を作って `CLOUDFLARE_TUNNEL_TOKEN` を発行したら、`.env` に入れて:
@@ -125,4 +144,3 @@ Chromium 同梱の `Dockerfile.rendered` は重くなりがちです。まずは
 ```bash
 docker compose up -d --build
 ```
-

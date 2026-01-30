@@ -2,9 +2,10 @@
 
 Gemini CLI は `settings.json` の `mcpServers` で MCP サーバを設定できます（stdio / SSE / Streamable HTTP）。HTTP の場合は `httpUrl` を使います。
 
-参考:
+参考（公式）:
 
-- https://geminicli.com/docs/tools/mcp-server
+- https://google-gemini.github.io/gemini-cli/docs/tools/mcp-server/
+- https://google-gemini.github.io/gemini-cli/docs/tools/mcp-server/#mcp-commands
 
 ## 1) 設定ファイル
 
@@ -39,3 +40,12 @@ Cloudflare Access を使わない場合は `CF-Access-*` を削除してくだ�
 Gemini CLI は「サーバ名のプレフィックス」を付けてツール名の衝突を避ける実装になっていることがあります。
 このサーバ側も衝突回避のためデフォルトで `sxng_` プレフィックスのツール名を返します（例: `sxng_web_search`）。
 
+## 4) 動作確認
+
+```bash
+gemini mcp list
+```
+
+Gemini CLI のチャット内コマンドでも確認できます:
+
+- `/mcp`

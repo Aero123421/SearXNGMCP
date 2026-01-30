@@ -26,6 +26,7 @@ OpenCode は `opencode.json`（または `~/.config/opencode/opencode.json`）�
       "type": "remote",
       "url": "https://mcp.example.com/mcp",
       "enabled": true,
+      "oauth": false,
       "headers": {
         "Authorization": "Bearer {env:SXNG_MCP_API_KEY}",
         "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
@@ -37,6 +38,10 @@ OpenCode は `opencode.json`（または `~/.config/opencode/opencode.json`）�
 ```
 
 Cloudflare Access を使わない場合は `CF-Access-*` を削除してください。
+
+補足:
+
+- `oauth: false` は「OAuth を使わない（APIキー等の固定ヘッダで認証する）」宣言です。
 
 ## 3) 動作確認
 
