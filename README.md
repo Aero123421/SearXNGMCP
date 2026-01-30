@@ -5,6 +5,8 @@ CLI系AIエージェント（Codex CLI / Claude Code / Gemini CLI など）か�
 
 このリポジトリは「まずローカルで評価 → チューニング → OCI Always Free（ARM）に載せる」流れを前提に、SearXNG の docker compose も同梱しています。
 
+クライアント設定ガイド（Codex CLI / Claude Code / Gemini CLI / OpenCode）: `docs/clients/README.md`
+
 次に読む: [目次](#目次) / [クイックスタート](#クイックスタートdocker--ローカル評価)
 
 ---
