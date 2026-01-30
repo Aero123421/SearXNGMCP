@@ -5,6 +5,8 @@ CLI系AIエージェント（Codex CLI / Claude Code / Gemini CLI など）か�
 
 このリポジトリは「まずローカルで評価 → チューニング → OCI Always Free（ARM）に載せる」流れを前提に、SearXNG の docker compose も同梱しています。
 
+次に読む: [目次](#目次) / [クイックスタート](#クイックスタートdocker--ローカル評価)
+
 ---
 
 ## 目次
@@ -22,6 +24,8 @@ CLI系AIエージェント（Codex CLI / Claude Code / Gemini CLI など）か�
 - [テスト](#テスト)
 - [トラブルシューティング](#トラブルシューティング)
 - [開発（ローカル）](#開発ローカル)
+
+次に読む: [全体像（アーキテクチャ）](#全体像アーキテクチャ) / [クイックスタート](#クイックスタートdocker--ローカル評価)
 
 ---
 
@@ -44,6 +48,8 @@ MCP Gateway は以下を担当します:
 - SearXNG結果の整形（URL正規化/重複排除）と再ランキング
 - `mode=balanced/high` で上位結果を本文取得して、**スニペット品質を改善**
 
+次に読む: [できること](#できること) / [クイックスタート](#クイックスタートdocker--ローカル評価) / [Cloudflare 公開](#cloudflare-公開推奨手順)（推奨構成）
+
 ---
 
 ## できること
@@ -62,6 +68,8 @@ MCP Gateway は以下を担当します:
   - `lang=auto`（簡易判定で ja/en を選ぶ）
   - intent判定（tech/hardware/history/images/general）でドメインブースト
   - 追加で `include_domains` / `exclude_domains` なども指定可能
+
+次に読む: [クイックスタート](#クイックスタートdocker--ローカル評価) / [ツール仕様](#ツール仕様どう使うか)
 
 ---
 
@@ -93,6 +101,8 @@ Cloudflare Tunnel（任意）:
 docker compose --profile tunnel up -d
 ```
 
+次に読む: [環境変数](#環境変数env) / [評価](#評価検索タスクをまとめて流す) / [OCIデプロイ](#oci-always-freearmにデプロイ)
+
 ---
 
 ## 環境変数（.env）
@@ -113,6 +123,8 @@ docker compose --profile tunnel up -d
 - `API_KEYS`: 長いランダム文字列（複数環境ならキーを分ける）
 - `SEARXNG_SECRET`: 長いランダム文字列
 - `CLOUDFLARE_TUNNEL_TOKEN`: Tunnel を使う場合
+
+次に読む: [OCIデプロイ](#oci-always-freearmにデプロイ) / [Cloudflare 公開](#cloudflare-公開推奨手順) / [ツール仕様](#ツール仕様どう使うか)
 
 ---
 
@@ -227,6 +239,8 @@ ARM Always Free はリソースが限られることが多く、Chromium 同梱�
 - 必要になったら `MCP_DOCKERFILE=Dockerfile.rendered` + `ENABLE_RENDERED_FETCH=true` を検討
 - OOM が出るなら swap の追加を検討（OCI/OSの推奨に従ってください）
 
+次に読む: [Cloudflare 公開](#cloudflare-公開推奨手順) / [ツール仕様](#ツール仕様どう使うか) / [評価](#評価検索タスクをまとめて流す)
+
 ---
 
 ## Cloudflare 公開（推奨手順）
@@ -258,6 +272,8 @@ Public Hostname（ルーティング）の設定（例）:
   - `CF-Access-Client-Id: <id>` / `CF-Access-Client-Secret: <secret>`（Cloudflare Access の Service Token 認証）
 
 ※ 現状、MCP Gateway は「Cloudflare Access のJWT検証」までは実装していません（Cloudflare側でブロックする前提）。必要なら origin 側で `Cf-Access-Jwt-Assertion` を検証する実装も追加できます。
+
+次に読む: [ツール仕様](#ツール仕様どう使うか) / [OCIデプロイ](#oci-always-freearmにデプロイ) / [環境変数](#環境変数env)
 
 ---
 
@@ -320,6 +336,8 @@ Public Hostname（ルーティング）の設定（例）:
 - `fetchTopK`: 上位K件だけ本文も取る（0なら取らない）
 - `fetchMode`: `http|rendered|auto`
 
+次に読む: [検索品質チューニング](#検索品質のチューニング本番デプロイ不要) / [rendered fetch](#rendered-fetchagent-browserについて) / [評価](#評価検索タスクをまとめて流す)
+
 ---
 
 ## 検索品質のチューニング（本番デプロイ不要）
@@ -336,6 +354,8 @@ Public Hostname（ルーティング）の設定（例）:
 
 - SearXNG 側の `server.limiter` は `false` にしています（ヘッダ無し環境で 429 になりやすい）。レート制御は **MCP Gateway側 + Cloudflare** で実施してください。
 - SearXNG はエンジンによっては起動時に「このエンジンは無効化した」系のログが出ることがあります（致命ではない場合があります）。
+
+次に読む: [評価](#評価検索タスクをまとめて流す) / [ツール仕様](#ツール仕様どう使うか)
 
 ---
 
@@ -359,11 +379,15 @@ ENABLE_RENDERED_FETCH=true
 docker compose up -d --build
 ```
 
+次に読む: [ツール仕様](#ツール仕様どう使うか) / [評価](#評価検索タスクをまとめて流す) / [トラブルシューティング](#トラブルシューティング)
+
 ## 開発（ローカル）
 
 ```bash
 API_KEYS=dev SEARXNG_BASE_URL=http://127.0.0.1:8080 npm run dev
 ```
+
+次に読む: [テスト](#テスト) / [ツール仕様](#ツール仕様どう使うか)
 
 ---
 
@@ -373,6 +397,8 @@ API_KEYS=dev SEARXNG_BASE_URL=http://127.0.0.1:8080 npm run dev
 npm test
 npm run typecheck
 ```
+
+次に読む: [評価](#評価検索タスクをまとめて流す) / [トラブルシューティング](#トラブルシューティング)
 
 ---
 
@@ -386,6 +412,8 @@ API_KEY=... MCP_URL=http://127.0.0.1:8787/mcp npm run eval
 ```
 
 出力は `docs/eval/out.json` に保存されます（`docs/eval/tasks.json` を編集して拡張可能）。
+
+次に読む: [検索品質チューニング](#検索品質のチューニング本番デプロイ不要) / [トラブルシューティング](#トラブルシューティング)
 
 ---
 
@@ -401,3 +429,5 @@ API_KEY=... MCP_URL=http://127.0.0.1:8787/mcp npm run eval
 - `ENABLE_RENDERED_FETCH=true` になっているか
 - `MCP_DOCKERFILE=Dockerfile.rendered` でビルドしているか（Chromium同梱）
 - `RENDER_TIMEOUT_MS` をサイトに合わせて調整
+
+次に読む: [目次](#目次) / [評価](#評価検索タスクをまとめて流す) / [OCIデプロイ](#oci-always-freearmにデプロイ)
