@@ -1,0 +1,3 @@
+# Overrides for /etc/searxng/limiter.toml (optional)
+# Keep empty initially; rely on SearXNG defaults.
+

@@ -1,0 +1,57 @@
+services:
+  mcp:
+    build:
+      context: .
+      dockerfile: ${MCP_DOCKERFILE:-Dockerfile}
+    restart: unless-stopped
+    environment:
+      HOST: ${HOST:-0.0.0.0}
+      PORT: ${PORT:-8787}
+      MCP_PATH: ${MCP_PATH:-/mcp}
+      API_KEYS: ${API_KEYS}
+      SEARXNG_BASE_URL: ${SEARXNG_BASE_URL:-http://searxng:8080}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      RATE_LIMIT_PER_MINUTE: ${RATE_LIMIT_PER_MINUTE:-60}
+      RATE_LIMIT_PER_DAY: ${RATE_LIMIT_PER_DAY:-2000}
+      FETCH_TIMEOUT_MS: ${FETCH_TIMEOUT_MS:-12000}
+      FETCH_MAX_BYTES: ${FETCH_MAX_BYTES:-2000000}
+      FETCH_MAX_CHARS: ${FETCH_MAX_CHARS:-12000}
+      ENABLE_RENDERED_FETCH: ${ENABLE_RENDERED_FETCH:-false}
+      AGENT_BROWSER_BIN: ${AGENT_BROWSER_BIN:-agent-browser}
+      RENDER_TIMEOUT_MS: ${RENDER_TIMEOUT_MS:-20000}
+    depends_on:
+      - searxng
+    # Cloudflare Tunnel経由運用を想定。ローカル動作確認したい場合だけ有効化。
+    ports:
+      - "127.0.0.1:8787:8787"
+
+  searxng:
+    image: searxng/searxng:latest
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "/etc/searxng/entrypoint-wrapper.sh"]
+    environment:
+      - BASE_URL=http://searxng:8080/
+      - SEARXNG_SETTINGS_PATH=/etc/searxng/settings.runtime.yml
+      - SEARXNG_SECRET=${SEARXNG_SECRET}
+      - SEARXNG_VALKEY_URL=${SEARXNG_VALKEY_URL:-valkey://valkey:6379/0}
+      - FORCE_OWNERSHIP=true
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    depends_on:
+      - valkey
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  valkey:
+    image: valkey/valkey:7-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - mcp
+    profiles: ["tunnel"]

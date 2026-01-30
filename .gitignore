@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+.DS_Store
+*.log
+docs/eval/out.json
+searxng/settings.runtime.yml

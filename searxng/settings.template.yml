@@ -1,0 +1,66 @@
+# SearXNG settings template (起動時に settings.runtime.yml を生成)
+use_default_settings: true
+
+general:
+  debug: false
+  instance_name: "SearXNG (MCP)"
+
+search:
+  safe_search: 1
+  autocomplete: "duckduckgo"
+  default_lang: "all"
+  formats:
+    - html
+    - json
+
+server:
+  secret_key: "CHANGE_ME"
+  # MCP Gateway側（+ Cloudflare）で認証/レート制御する前提。
+  # SearXNG側の limiter を有効にすると、X-Forwarded-For / X-Real-IP が無い環境で 429 になりやすい。
+  limiter: false
+  image_proxy: true
+  port: 8080
+  bind_address: "0.0.0.0"
+
+outgoing:
+  request_timeout: 3.0
+  max_request_timeout: 10.0
+
+valkey:
+  url: valkey://valkey:6379/0
+
+plugins:
+  searx.plugins.tracker_url_remover.SXNGPlugin:
+    active: true
+  searx.plugins.self_info.SXNGPlugin:
+    active: true
+  searx.plugins.hash_plugin.SXNGPlugin:
+    active: true
+  searx.plugins.unit_converter.SXNGPlugin:
+    active: true
+  searx.plugins.calculator.SXNGPlugin:
+    active: true
+  searx.plugins.hostnames.SXNGPlugin:
+    active: true
+
+hostnames:
+  high_priority:
+    - '(.*\\.)?developer\\.mozilla\\.org$'
+    - '(.*\\.)?docs\\.microsoft\\.com$'
+    - '(.*\\.)?learn\\.microsoft\\.com$'
+    - '(.*\\.)?docs\\.oracle\\.com$'
+    - '(.*\\.)?kubernetes\\.io$'
+    - '(.*\\.)?nodejs\\.org$'
+    - '(.*\\.)?python\\.org$'
+    - '(.*\\.)?pypi\\.org$'
+    - '(.*\\.)?npmjs\\.com$'
+    - '(.*\\.)?github\\.com$'
+    - '(.*\\.)?gitlab\\.com$'
+    - '(.*\\.)?stackoverflow\\.com$'
+    - '(.*\\.)?wikipedia\\.org$'
+    - '(.*\\.)?britannica\\.com$'
+  low_priority:
+    - '(.*\\.)?pinterest\\.com$'
+    - '(.*\\.)?quora\\.com$'
+  remove:
+    - '(.*\\.)?medium\\.com$'
