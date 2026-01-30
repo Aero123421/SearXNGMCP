@@ -18,14 +18,13 @@ export CF_ACCESS_CLIENT_SECRET="..."
 
 ## 2) HTTP MCP サーバを追加
 
-例（オプションは server 名より前に書く）:
+例（公式ドキュメントの書き方）:
 
 ```bash
-claude mcp add --transport http \
+claude mcp add --transport http sxng https://mcp.example.com/mcp \
   --header "Authorization: Bearer $SXNG_MCP_API_KEY" \
   --header "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID" \
-  --header "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET" \
-  sxng https://mcp.example.com/mcp
+  --header "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET"
 ```
 
 Cloudflare Access を使わない場合は `CF-Access-*` の2行を省略してください。
@@ -43,6 +42,11 @@ claude mcp add-json sxng '{
   }
 }'
 ```
+
+注意:
+
+- secrets をリポジトリに残したくない場合は `--scope local`（デフォルト）を推奨です。
+- `--scope project` を使うとプロジェクト直下の `.mcp.json` に保存されるので、秘密情報を入れる運用ならコミットしないようにしてください。
 
 スコープ（設定の保存先）:
 
