@@ -15,6 +15,8 @@ describe("mcp server", () => {
     process.env.PORT = String(port);
     process.env.MCP_PATH = "/mcp";
     process.env.API_KEYS = "testkey";
+    process.env.TOOL_PREFIX = "sxng";
+    process.env.ENABLE_LEGACY_TOOL_NAMES = "false";
     process.env.SEARXNG_BASE_URL = searx.baseUrl;
     process.env.RATE_LIMIT_PER_MINUTE = "999";
     process.env.RATE_LIMIT_PER_DAY = "9999";
@@ -45,13 +47,13 @@ describe("mcp server", () => {
 
       const tools = await client.listTools();
       const toolNames = tools.tools.map((t) => t.name);
-      expect(toolNames).toContain("web_search");
-      expect(toolNames).toContain("web_image_search");
-      expect(toolNames).toContain("web_research");
-      expect(toolNames).toContain("web_fetch");
+      expect(toolNames).toContain("sxng_web_search");
+      expect(toolNames).toContain("sxng_web_image_search");
+      expect(toolNames).toContain("sxng_web_research");
+      expect(toolNames).toContain("sxng_web_fetch");
 
       const result = await client.callTool({
-        name: "web_search",
+        name: "sxng_web_search",
         arguments: { query: "fetch", limit: 5, mode: "fast", lang: "auto" }
       });
 
@@ -69,7 +71,7 @@ describe("mcp server", () => {
 
       // image search should return imageUrl
       const images = await client.callTool({
-        name: "web_image_search",
+        name: "sxng_web_image_search",
         arguments: { query: "cat", limit: 5 }
       });
       const imgStructured = (images as any).structuredContent as { results: any[] };
@@ -78,7 +80,7 @@ describe("mcp server", () => {
 
       // research should aggregate across multiple queries (fetchTopK=0 avoids external fetch)
       const research = await client.callTool({
-        name: "web_research",
+        name: "sxng_web_research",
         arguments: { question: "fetch api", maxQueries: 2, perQueryLimit: 3, fetchTopK: 0 }
       });
       const researchStructured = (research as any).structuredContent as {
@@ -92,7 +94,7 @@ describe("mcp server", () => {
 
       // web_fetch should block localhost by SSRF policy and return isError
       const fetchResult = await client.callTool({
-        name: "web_fetch",
+        name: "sxng_web_fetch",
         arguments: { url: "http://127.0.0.1/" }
       });
       expect((fetchResult as any).isError).toBe(true);

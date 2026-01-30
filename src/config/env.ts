@@ -14,6 +14,24 @@ const EnvSchema = z.object({
 
   MCP_PATH: z.string().default("/mcp"),
 
+  TOOL_PREFIX: z
+    .string()
+    .optional()
+    .transform((v) => {
+      const trimmed = v?.trim();
+      if (!trimmed) return "sxng";
+      const normalized = trimmed.toLowerCase();
+      if (normalized === "none" || normalized === "off" || normalized === "false") return "";
+      return trimmed;
+    })
+    .default("sxng"),
+
+  ENABLE_LEGACY_TOOL_NAMES: z
+    .string()
+    .optional()
+    .transform((v) => v === "1" || v?.toLowerCase() === "true")
+    .default(false),
+
   API_KEYS: z
     .string()
     .min(1)

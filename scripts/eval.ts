@@ -4,7 +4,7 @@ import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/
 
 type Task = {
   category: string;
-  tool: "web_search" | "web_image_search" | "web_research" | "web_fetch";
+  tool: string;
   args: Record<string, unknown>;
 };
 
@@ -50,12 +50,12 @@ async function main(): Promise<void> {
     const structured = (result as any).structuredContent;
     out.push({ task: t, structured });
 
-    if (t.tool === "web_image_search") {
+    if (t.tool.endsWith("web_image_search")) {
       const count = structured?.results?.length ?? 0;
       console.log(`images: ${count}`);
       continue;
     }
-    if (t.tool === "web_research") {
+    if (t.tool.endsWith("web_research")) {
       const finalResults = structured?.finalResults ?? [];
       console.log(`queries: ${structured?.queries?.length ?? 0}, finalResults: ${finalResults.length}`);
       const topDomains = finalResults
@@ -65,7 +65,7 @@ async function main(): Promise<void> {
       console.log(`top domains: ${topDomains.join(", ")}`);
       continue;
     }
-    if (t.tool === "web_search") {
+    if (t.tool.endsWith("web_search")) {
       const results = structured?.results ?? [];
       console.log(`results: ${results.length}, intent=${structured?.intent ?? ""}, lang=${structured?.language ?? ""}`);
       const topDomains = results

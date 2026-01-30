@@ -144,13 +144,34 @@ function buildMcpServer(params: {
 }): McpServer {
   const server = new McpServer(
     {
-      name: "mcp-websearch",
+      name: "sxng-mcp",
       version: "0.1.0"
     },
     { capabilities: { logging: {} } }
   );
 
-  server.registerTool(
+  const toolPrefix = params.config.TOOL_PREFIX;
+  const enableLegacyToolNames = params.config.ENABLE_LEGACY_TOOL_NAMES;
+  const toolName = (name: string): string => (toolPrefix ? `${toolPrefix}_${name}` : name);
+
+  const registerTool = (baseName: string, spec: any, handler: any): void => {
+    const primary = toolName(baseName);
+    server.registerTool(primary, spec, handler);
+
+    if (enableLegacyToolNames && primary !== baseName) {
+      server.registerTool(
+        baseName,
+        {
+          ...spec,
+          title: `${spec.title} (legacy)`,
+          description: `${spec.description ?? ""}\n\n(legacy alias: prefer ${primary})`.trim()
+        },
+        handler
+      );
+    }
+  };
+
+  registerTool(
     "web_search",
     {
       title: "Web Search",
@@ -189,20 +210,21 @@ function buildMcpServer(params: {
         nextCursor: z.string().optional()
       }
     },
-    async ({
-      query,
-      limit,
-      cursor,
-      lang,
-      safe,
-      mode,
-      categories,
-      time_range,
-      engines,
-      tech_bias,
-      include_domains,
-      exclude_domains
-    }) => {
+    async (args: any) => {
+      const {
+        query,
+        limit,
+        cursor,
+        lang,
+        safe,
+        mode,
+        categories,
+        time_range,
+        engines,
+        tech_bias,
+        include_domains,
+        exclude_domains
+      } = args as any;
       const page = cursor ? decodeCursor(cursor).page : 1;
       const intent = detectIntent(query);
       const language =
@@ -343,7 +365,7 @@ function buildMcpServer(params: {
     }
   );
 
-  server.registerTool(
+  registerTool(
     "web_image_search",
     {
       title: "Web Image Search",
@@ -371,7 +393,8 @@ function buildMcpServer(params: {
         nextCursor: z.string().optional()
       }
     },
-    async ({ query, limit, cursor, lang, safe, engines }) => {
+    async (args: any) => {
+      const { query, limit, cursor, lang, safe, engines } = args as any;
       const page = cursor ? decodeCursor(cursor).page : 1;
       const language =
         lang === "auto"
@@ -431,7 +454,7 @@ function buildMcpServer(params: {
     }
   );
 
-  server.registerTool(
+  registerTool(
     "web_research",
     {
       title: "Web Research",
@@ -485,7 +508,8 @@ function buildMcpServer(params: {
         )
       }
     },
-    async ({ question, maxQueries, perQueryLimit, fetchTopK, fetchMode, lang, safe }) => {
+    async (args: any) => {
+      const { question, maxQueries, perQueryLimit, fetchTopK, fetchMode, lang, safe } = args as any;
       const intent = detectIntent(question);
       const language =
         lang === "auto"
@@ -594,7 +618,7 @@ function buildMcpServer(params: {
     }
   );
 
-  server.registerTool(
+  registerTool(
     "web_fetch",
     {
       title: "Web Fetch",
@@ -615,7 +639,8 @@ function buildMcpServer(params: {
         mode: z.enum(["auto", "http", "rendered"])
       }
     },
-    async ({ url, mode, maxChars }) => {
+    async (args: any) => {
+      const { url, mode, maxChars } = args as any;
       const result = await params.fetcher.fetch({ url, mode, maxChars });
       const payload = {
         url: result.url,

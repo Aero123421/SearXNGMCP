@@ -40,7 +40,7 @@ MCP Gateway は以下を担当します:
 
 - `Authorization: Bearer <API_KEY>` 認証（環境ごとにキー発行）
 - レート制限（分/日、トークン単位）
-- SSRF対策付き `web_fetch`
+- SSRF対策付き `sxng_web_fetch`（デフォルト。ツール名は prefix で変更可）
 - SearXNG結果の整形（URL正規化/重複排除）と再ランキング
 - `mode=balanced/high` で上位結果を本文取得して、**スニペット品質を改善**
 
@@ -50,10 +50,10 @@ MCP Gateway は以下を担当します:
 
 - MCP Streamable HTTP（`POST/GET/DELETE /mcp`）で公開
 - ツール:
-  - `web_search`（`fast|balanced|high`）
-  - `web_image_search`
-  - `web_research`（複数クエリで深掘り、要約はしない＝証拠を返す）
-  - `web_fetch`（`http|rendered|auto`）
+  - `sxng_web_search`（`fast|balanced|high`）
+  - `sxng_web_image_search`
+  - `sxng_web_research`（複数クエリで深掘り、要約はしない＝証拠を返す）
+  - `sxng_web_fetch`（`http|rendered|auto`）
 - セキュリティ:
   - Bearer token 認証（必須）
   - レート制限（必須）
@@ -101,8 +101,10 @@ docker compose --profile tunnel up -d
 
 - `API_KEYS`: Bearer token をカンマ区切りで複数設定可（例: `key-dev,key-ci,key-prod`）
 - `SEARXNG_BASE_URL`: SearXNG のURL（composeなら `http://searxng:8080`）
+- `TOOL_PREFIX`: ツール名のプレフィックス（デフォルト `sxng` → `sxng_web_search` など）
+- `ENABLE_LEGACY_TOOL_NAMES`: `true` で `web_search` 等の旧名も併設（混同しやすいので非推奨）
 - `RATE_LIMIT_PER_MINUTE`, `RATE_LIMIT_PER_DAY`: トークン単位の制限
-- `FETCH_TIMEOUT_MS`, `FETCH_MAX_BYTES`, `FETCH_MAX_CHARS`: `web_fetch` の防御的制限
+- `FETCH_TIMEOUT_MS`, `FETCH_MAX_BYTES`, `FETCH_MAX_CHARS`: `sxng_web_fetch` の防御的制限
 - `ENABLE_RENDERED_FETCH`: `true` で `mode=rendered/auto` を有効化
 - `MCP_DOCKERFILE`: `Dockerfile`（通常）/ `Dockerfile.rendered`（Chromium同梱）
 
@@ -263,13 +265,16 @@ Public Hostname（ルーティング）の設定（例）:
 
 このサーバは MCP の `tools/call` で使われます（クライアントは MCP SDK 等で接続）。
 
-### `web_search`
+### `sxng_web_search`（デフォルト）
+
+他のMCPやクライアント内蔵ツールと `web_search` / `web_fetch` が衝突・混同しやすいので、**デフォルトで `sxng_` プレフィックス**を付けています。
+必要なら `.env` の `TOOL_PREFIX` を変更してください。
 
 用途: まず「それっぽいURLを集める」＋必要なら「上位の本文で検証してスニペット改善」
 
 - `mode=fast`: SearXNG結果のみ（最速・最安）
-- `mode=balanced`: 上位1件を `web_fetch(mode=http)` で本文取得して品質を少し上げる
-- `mode=high`: 上位3件を `web_fetch(mode=auto)`（HTTP→必要ならrendered）で検証して品質を上げる（重い）
+- `mode=balanced`: 上位1件を `sxng_web_fetch(mode=http)` で本文取得して品質を少し上げる
+- `mode=high`: 上位3件を `sxng_web_fetch(mode=auto)`（HTTP→必要ならrendered）で検証して品質を上げる（重い）
 
 よく使う引数:
 
@@ -286,13 +291,13 @@ Public Hostname（ルーティング）の設定（例）:
 - `structuredContent.results[]`: `{ title, url, snippet, source, score, domain }`
 - `structuredContent.nextCursor`: 次ページ用カーソル
 
-### `web_image_search`
+### `sxng_web_image_search`（デフォルト）
 
 用途: 画像検索（SearXNG categories=images）
 
 - `structuredContent.results[]`: `{ title, pageUrl, imageUrl, thumbnailUrl, width, height, source }`
 
-### `web_fetch`
+### `sxng_web_fetch`（デフォルト）
 
 用途: URLの本文抽出（Readability）
 
@@ -306,7 +311,7 @@ Public Hostname（ルーティング）の設定（例）:
 - 非標準ポートを拒否
 - `FETCH_MAX_BYTES` / `FETCH_TIMEOUT_MS` などで防御的に制限
 
-### `web_research`
+### `sxng_web_research`（デフォルト）
 
 用途: 「質問」を複数クエリに分解して検索→結果を集約（**要約はしない**）
 

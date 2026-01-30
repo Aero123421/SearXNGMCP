@@ -8,6 +8,8 @@ services:
       HOST: ${HOST:-0.0.0.0}
       PORT: ${PORT:-8787}
       MCP_PATH: ${MCP_PATH:-/mcp}
+      TOOL_PREFIX: ${TOOL_PREFIX:-sxng}
+      ENABLE_LEGACY_TOOL_NAMES: ${ENABLE_LEGACY_TOOL_NAMES:-false}
       API_KEYS: ${API_KEYS}
       SEARXNG_BASE_URL: ${SEARXNG_BASE_URL:-http://searxng:8080}
       LOG_LEVEL: ${LOG_LEVEL:-info}

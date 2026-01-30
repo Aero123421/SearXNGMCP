@@ -1,78 +1,77 @@
 [
   {
     "category": "swe",
-    "tool": "web_search",
+    "tool": "sxng_web_search",
     "args": { "query": "TypeError fetch failed nodejs undici", "mode": "high", "limit": 10, "lang": "auto" }
   },
   {
     "category": "swe",
-    "tool": "web_search",
+    "tool": "sxng_web_search",
     "args": { "query": "Python pip dependency resolver conflict 해결", "mode": "balanced", "limit": 10, "lang": "auto" }
   },
   {
     "category": "swe",
-    "tool": "web_search",
+    "tool": "sxng_web_search",
     "args": { "query": "Kubernetes CrashLoopBackOff troubleshooting", "mode": "balanced", "limit": 10, "lang": "auto" }
   },
   {
     "category": "hardware",
-    "tool": "web_search",
+    "tool": "sxng_web_search",
     "args": { "query": "RTX 4070 vs RX 7800 XT power consumption benchmark", "mode": "fast", "limit": 10, "lang": "auto" }
   },
   {
     "category": "hardware",
-    "tool": "web_search",
+    "tool": "sxng_web_search",
     "args": { "query": "Apple M3 memory bandwidth specs", "mode": "fast", "limit": 10, "lang": "auto" }
   },
   {
     "category": "daily",
-    "tool": "web_search",
+    "tool": "sxng_web_search",
     "args": { "query": "簡単 パスタ レシピ 失敗しない", "mode": "fast", "limit": 10, "lang": "auto" }
   },
   {
     "category": "daily",
-    "tool": "web_search",
+    "tool": "sxng_web_search",
     "args": { "query": "how to remove coffee stains from white shirt", "mode": "fast", "limit": 10, "lang": "auto" }
   },
   {
     "category": "history",
-    "tool": "web_search",
+    "tool": "sxng_web_search",
     "args": { "query": "明治維新 年表 主要事件", "mode": "fast", "limit": 10, "lang": "auto" }
   },
   {
     "category": "history",
-    "tool": "web_search",
+    "tool": "sxng_web_search",
     "args": { "query": "French Revolution causes timeline", "mode": "fast", "limit": 10, "lang": "auto" }
   },
   {
     "category": "multilang",
-    "tool": "web_search",
+    "tool": "sxng_web_search",
     "args": { "query": "¿Qué es OAuth 2.1 diferencias con OAuth 2.0?", "mode": "balanced", "limit": 10, "lang": "auto" }
   },
   {
     "category": "multilang",
-    "tool": "web_search",
+    "tool": "sxng_web_search",
     "args": { "query": "한국어 TLS 핸드셰이크 설명", "mode": "balanced", "limit": 10, "lang": "auto" }
   },
   {
     "category": "images",
-    "tool": "web_image_search",
+    "tool": "sxng_web_image_search",
     "args": { "query": "kubernetes logo png", "limit": 10, "lang": "auto" }
   },
   {
     "category": "images",
-    "tool": "web_image_search",
+    "tool": "sxng_web_image_search",
     "args": { "query": "富士山 写真 高解像度", "limit": 10, "lang": "auto" }
   },
   {
     "category": "deep",
-    "tool": "web_research",
+    "tool": "sxng_web_research",
     "args": { "question": "How does HTTP/2 header compression (HPACK) work?", "maxQueries": 3, "perQueryLimit": 5, "fetchTopK": 2, "fetchMode": "http", "lang": "auto" }
   },
   {
     "category": "deep",
-    "tool": "web_research",
+    "tool": "sxng_web_research",
     "args": { "question": "OpenAI Codex CLI MCP Streamable HTTP transport requirements", "maxQueries": 3, "perQueryLimit": 5, "fetchTopK": 2, "fetchMode": "http", "lang": "auto" }
   }
 ]
-
