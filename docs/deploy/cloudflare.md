@@ -135,3 +135,20 @@ Service Token を使う場合、クライアントからは通常以下のヘッ
 - 404 になる:
   - Tunnel の Public Hostname の `Path` が `/mcp` になっていない（例: `mcp` になっている）
   - Tunnel の Service が `https://...` になっている（基本は `http://mcp:8787`）
+
+## 7) トラブルの切り分け（Access Logs を見る）
+
+Cloudflare 側の Access が「どのアプリにマッチして」「なぜ拒否したか」を最短で確認できます。
+
+手順:
+
+1) Cloudflare Zero Trust → Access → Logs
+2) 対象のホスト名（例: `mcp.fr3ed.com`）で絞る
+3) 可能ならリクエストの `CF-RAY`（レスポンスヘッダに出る）で絞る
+
+ログでよくある原因:
+
+- `No matching policy` / `No policy matched`:
+  - アプリの `domain/path` がズレている、または Service Token Allow のポリシーが無い
+- `Service token` が認識されていない:
+  - ヘッダが付いていない、または別アプリ（ワイルドカード/キャッチオール）に先にマッチしている
