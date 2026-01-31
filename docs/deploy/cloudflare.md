@@ -23,6 +23,30 @@ Cloudflare Zero Trust の画面で Tunnel を作成し、トークンを取得�
 
 トークンを `.env` の `CLOUDFLARE_TUNNEL_TOKEN` に設定してください。
 
+### UI が違って見える場合（重要）
+
+Cloudflare の UI は時期・アカウント状態・言語でナビ名が揺れます。よくあるパターン:
+
+- `Networks > Tunnels` が見える
+- `コネクタ（Connectors）` から Tunnel 一覧に入る
+
+どちらでも「作成済み Tunnel の詳細画面」まで入れれば、最終的に以下のどこかに “公開ホスト名（Public Hostnames）” が出ます:
+
+- タブ: `Public Hostnames` / `公開ホスト名`
+- メニュー: `Routes` / `ルート` 配下に `Public hostnames` がある
+
+もしどうしても見当たらない場合は、次の “ローカル管理トンネル” の可能性を確認してください。
+
+### 「ローカル管理トンネル」と表示される場合
+
+Tunnel が “locally managed / ローカル構成” 扱いだと、ダッシュボードから Public Hostname を追加できません。
+その場合は以下のいずれかになります:
+
+- `cloudflared` の設定ファイル（`config.yml`）で ingress を定義する
+- ダッシュボード管理（remotely managed）へ移行する
+
+（本リポジトリの推奨はダッシュボード管理 + Public Hostname です）
+
 ## 2) `cloudflared` を起動（docker compose）
 
 このリポジトリは `cloudflared` コンテナを同梱しています。
