@@ -71,3 +71,22 @@ Invoke-RestMethod $MCP_URL -Method Post -ContentType "application/json" `
 - `sxng_web_research`
 
 次に、簡単な検索を1回投げて結果が返ればOKです。
+
+### curl で疎通する場合の注意（Streamable HTTP）
+
+MCP Streamable HTTP の `initialize` は、クライアントが **`application/json` と `text/event-stream` の両方を受け取れる**ことを示す必要があります。
+`curl` で叩く場合は `Accept` を明示してください（これが無いと `406 Not Acceptable` になります）。
+
+```powershell
+$u="https://mcp.example.com/mcp"
+$init='{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"curl","version":"1.0"}}}'
+
+curl.exe -sS -m 15 -D - -o - `
+  -H "Accept: application/json, text/event-stream" `
+  -H "Content-Type: application/json" `
+  -H "Authorization: Bearer YOUR_API_KEY" `
+  --data-raw "$init" `
+  $u
+```
+
+成功するとレスポンスヘッダに `mcp-session-id` が付きます。以後の `GET/POST/DELETE /mcp` では、その `mcp-session-id` をヘッダで送ります。
