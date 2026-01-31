@@ -209,6 +209,18 @@ curl.exe -sS -m 15 -D - -o - `
 
 - 環境変数を設定してから `opencode mcp list` を実行
 
+### 5.3 `SSE error: Non-200 status code (401)`
+
+原因候補:
+
+- `Authorization` ヘッダが無い（未設定 / 変数展開されていない）
+- `Authorization` の形式が違う（`Bearer ` プレフィックス無し等）
+
+直し方:
+
+- `Authorization: Bearer <API_KEY>` になっているか確認
+- Cloudflare Access を使う構成なら `CF-Access-Client-Id` / `CF-Access-Client-Secret` も付ける
+
 ---
 
 ## 6) `sxng_web_search` だけ `fetch failed` になる（重要）
@@ -280,4 +292,3 @@ docker rm -f searxng
 - どこにも貼らない: `API_KEYS`, `CF-Access-Client-Secret`, `CLOUDFLARE_TUNNEL_TOKEN`, `SEARXNG_SECRET`
 - 会話/スクショ/ログに出した可能性がある場合は **ローテーション**
 - クライアントごとにキーを分ける（漏れたクライアントだけ止められる）
-

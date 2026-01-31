@@ -12,6 +12,7 @@ OpenCode は `opencode.json`（または `~/.config/opencode/opencode.json`）�
 よく使う配置:
 
 - グローバル: `~/.config/opencode/opencode.json`
+- Windows（例）: `C:\\Users\\<you>\\.config\\opencode\\opencode.jsonc`
 - プロジェクト: `<repo-root>/opencode.json`（Git管理しやすい）
 
 ## 2) remote MCP（HTTP）を追加
@@ -44,6 +45,7 @@ Cloudflare Access を使わない場合は `CF-Access-*` を削除してくだ�
 
 - `oauth: false` は「OAuth を使わない（APIキー等の固定ヘッダで認証する）」宣言です。
 - Streamable HTTP のため、`Accept: application/json, text/event-stream` を付けるのが安全です（付けないと `406 Not Acceptable` になるクライアントがあります）。
+- `Authorization` は **必ず** `Bearer ` プレフィックス付きにしてください（無いと `401` になります）。
 
 ## 3) 動作確認
 
