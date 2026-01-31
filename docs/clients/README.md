@@ -9,6 +9,10 @@
 - Cloudflare Access（Service Token）を使う場合は `CF-Access-Client-Id` / `CF-Access-Client-Secret` も必要です（インストール不要、ヘッダを付けるだけ）
 - ツール名は衝突回避のためデフォルトで `sxng_` プレフィックスです（例: `sxng_web_search`）
 
+Cloudflare Access の設定方法:
+
+- `docs/deploy/cloudflare.md`
+
 まずは共通事項を読んでから、利用するクライアントのページへ進んでください。
 
 - 共通（URL/ヘッダ/命名/チェック方法）: `docs/clients/common.md`

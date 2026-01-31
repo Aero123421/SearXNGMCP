@@ -6,6 +6,10 @@ Claude Code は MCP に対応しており、`claude mcp add` コマンドでサ�
 
 - https://docs.anthropic.com/en/docs/claude-code/mcp
 
+Cloudflare Access（Service Token）の設定がまだの場合:
+
+- `docs/deploy/cloudflare.md`（Access Application / Policy の作り方）
+
 ## 1) 事前準備（環境変数）
 
 例（bash）:

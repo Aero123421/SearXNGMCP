@@ -19,6 +19,7 @@
 - `CF-Access-Client-Secret: <client-secret>`
 
 ※ Cloudflare Access のヘッダ名は Access の Service Token 認証で一般的に使われるものです。実際にどの認証方式（Service Token / mTLS / etc）を使うかで必要ヘッダは変わります。
+Access 側の設定手順は `docs/deploy/cloudflare.md` を参照してください。
 
 ## 3) ツール名の衝突回避（重要）
 
@@ -47,4 +48,3 @@
 - `sxng_web_research`
 
 次に、簡単な検索を1回投げて結果が返ればOKです。
-
