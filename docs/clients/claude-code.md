@@ -20,6 +20,15 @@ export CF_ACCESS_CLIENT_ID="..."
 export CF_ACCESS_CLIENT_SECRET="..."
 ```
 
+PowerShell 例:
+
+```powershell
+$env:MCP_URL="https://mcp.example.com/mcp"
+$env:SXNG_MCP_API_KEY="..."
+$env:CF_ACCESS_CLIENT_ID="..."      # IDだけ（"CF-Access-Client-Id:" は入れない）
+$env:CF_ACCESS_CLIENT_SECRET="..."  # Secretだけ（"CF-Access-Client-Secret:" は入れない）
+```
+
 ## 2) HTTP MCP サーバを追加
 
 例（公式ドキュメントの書き方）:
@@ -30,6 +39,20 @@ claude mcp add --transport http sxng https://mcp.example.com/mcp \
   --header "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID" \
   --header "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET"
 ```
+
+PowerShell 例（改行はバッククォート）:
+
+```powershell
+claude mcp add --transport http sxng $env:MCP_URL `
+  --header "Authorization: Bearer $env:SXNG_MCP_API_KEY" `
+  --header "CF-Access-Client-Id: $env:CF_ACCESS_CLIENT_ID" `
+  --header "CF-Access-Client-Secret: $env:CF_ACCESS_CLIENT_SECRET"
+```
+
+注意（重要）:
+
+- `--header "CF-Access-Client-Id: ..."` の `...` には **IDだけ**を入れます（値に `CF-Access-Client-Id:` を含めない）
+- `--header "CF-Access-Client-Secret: ..."` も同様に **Secretだけ**です
 
 Cloudflare Access を使わない場合は `CF-Access-*` の2行を省略してください。
 

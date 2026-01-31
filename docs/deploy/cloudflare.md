@@ -112,6 +112,11 @@ Service Token を使う場合、クライアントからは通常以下のヘッ
 - `CF-Access-Client-Id: <id>`
 - `CF-Access-Client-Secret: <secret>`
 
+よくあるミス（重要）:
+
+- 変数の中に `CF-Access-Client-Id:` / `CF-Access-Client-Secret:` の文字列まで入れてしまう（NG）
+  - ヘッダ名はクライアント設定側に書き、値には **ID/Secretそのもの**だけを入れます
+
 加えて、この MCP Gateway は必ず:
 
 - `Authorization: Bearer <API_KEY>`

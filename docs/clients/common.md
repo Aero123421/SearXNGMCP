@@ -21,6 +21,29 @@
 ※ Cloudflare Access のヘッダ名は Access の Service Token 認証で一般的に使われるものです。実際にどの認証方式（Service Token / mTLS / etc）を使うかで必要ヘッダは変わります。
 Access 側の設定手順は `docs/deploy/cloudflare.md` を参照してください。
 
+### よくあるミス（重要）
+
+- 変数の中に `CF-Access-Client-Id:` や `CF-Access-Client-Secret:` の文字列まで入れないでください（NG）
+  - `claude mcp add --header "CF-Access-Client-Id: $CF_ID"` のように **ヘッダ名はコマンド側に書き**、`$CF_ID` には **IDだけ**を入れます
+- PowerShell の `-Headers @{ ... }` は **キーがヘッダ名、値が中身**です（ヘッダ名+値を1本の文字列にしない）
+
+PowerShell 例（疎通確認用。Access + Bearer の両方を送る）:
+
+```powershell
+$MCP_URL = "https://mcp.example.com/mcp"
+$API_KEY = "YOUR_MCP_API_KEY"
+$CF_ID   = "YOUR_ACCESS_CLIENT_ID"
+$CF_SEC  = "YOUR_ACCESS_CLIENT_SECRET"
+
+Invoke-RestMethod $MCP_URL -Method Post -ContentType "application/json" `
+  -Headers @{
+    "Authorization"="Bearer $API_KEY"
+    "CF-Access-Client-Id"=$CF_ID
+    "CF-Access-Client-Secret"=$CF_SEC
+  } `
+  -Body '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"powershell","version":"1.0"}}}'
+```
+
 ## 3) ツール名の衝突回避（重要）
 
 他のMCPやクライアント内蔵ツールと `web_search` / `web_fetch` が衝突・混同しやすいので、このサーバはデフォルトでツール名をプレフィックス付きにしています。
