@@ -28,6 +28,7 @@ OpenCode は `opencode.json`（または `~/.config/opencode/opencode.json`）�
       "enabled": true,
       "oauth": false,
       "headers": {
+        "Accept": "application/json, text/event-stream",
         "Authorization": "Bearer {env:SXNG_MCP_API_KEY}",
         "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
@@ -42,6 +43,7 @@ Cloudflare Access を使わない場合は `CF-Access-*` を削除してくだ�
 補足:
 
 - `oauth: false` は「OAuth を使わない（APIキー等の固定ヘッダで認証する）」宣言です。
+- Streamable HTTP のため、`Accept: application/json, text/event-stream` を付けるのが安全です（付けないと `406 Not Acceptable` になるクライアントがあります）。
 
 ## 3) 動作確認
 
