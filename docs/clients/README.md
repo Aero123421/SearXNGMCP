@@ -12,6 +12,7 @@
 Cloudflare Access の設定方法:
 
 - `docs/deploy/cloudflare.md`
+- うまく繋がらない場合: `docs/troubleshooting.md`
 
 まずは共通事項を読んでから、利用するクライアントのページへ進んでください。
 

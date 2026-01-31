@@ -9,6 +9,7 @@ CLI系AIエージェント（Codex CLI / Claude Code / Gemini CLI など）か�
 
 - デプロイ手順: `docs/deploy/README.md`
 - クライアント設定（Codex CLI / Claude Code / Gemini CLI / OpenCode）: `docs/clients/README.md`
+- トラブルシューティング（症状別）: `docs/troubleshooting.md`
 
 次に読む: [目次](#目次) / [クイックスタート](#クイックスタートdocker--ローカル評価)
 
